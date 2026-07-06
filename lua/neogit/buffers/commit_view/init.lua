@@ -491,6 +491,7 @@ function M:open(kind)
 
             if diff_component then
               local diff = diff_component.options.diff
+              assert(diff, "Expected diff but was nil")
               message = ("Reverse %q?"):format(diff.file)
               hunks = diff.hunks
             else

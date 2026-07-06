@@ -70,9 +70,11 @@ function M.hunk(popup)
   if not success then
     local file_info = hunk and hunk.file and (" in " .. hunk.file) or ""
     notification.error(
-      "Failed to revert hunk" .. file_info .. ".\n"
-      .. "The patch may conflict with the current state.\n\n"
-      .. (error_msg or "Unknown error")
+      "Failed to revert hunk"
+        .. file_info
+        .. ".\n"
+        .. "The patch may conflict with the current state.\n\n"
+        .. (error_msg or "Unknown error")
     )
   end
 end
