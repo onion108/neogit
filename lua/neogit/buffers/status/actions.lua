@@ -281,7 +281,7 @@ M.v_stage = function(self)
     for _, section in ipairs(selection.sections) do
       if section.name == "unstaged" or section.name == "untracked" then
         for _, item in ipairs(section.items) do
-          if item.mode == "UU" then
+          if git.status.is_unmerged(item.mode) then
             notification.info("Conflicts must be resolved before staging lines")
             return
           end
@@ -834,7 +834,7 @@ M.n_discard = function(self)
           end
         end
       elseif section == "unstaged" then
-        if selection.item.mode:match("^[UAD][UAD]") then
+        if git.status.is_unmerged(selection.item.mode) then
           choices = { "&ours", "&theirs", "&conflict", "&abort" }
           action = function()
             local choice =
@@ -865,7 +865,7 @@ M.n_discard = function(self)
         end
         refresh = { update_diffs = { "unstaged:" .. selection.item.name } }
       elseif section == "staged" then
-        if selection.item.mode:match("^[UAD][UAD]") then
+        if git.status.is_unmerged(selection.item.mode) then
           choices = { "&ours", "&theirs", "&conflict", "&abort" }
           action = function()
             local choice =
@@ -915,7 +915,7 @@ M.n_discard = function(self)
         refresh = {}
       end
     elseif selection.item then -- Discard Hunk
-      if selection.item.mode == "UU" then
+      if git.status.is_unmerged(selection.item.mode) then
         notification.warn("Resolve conflicts in file before discarding hunks.")
         return
       end
@@ -954,7 +954,7 @@ M.n_discard = function(self)
       elseif section == "unstaged" then
         local conflict = false
         for _, item in ipairs(selection.section.items) do
-          if item.mode == "UU" then
+          if git.status.is_unmerged(item.mode) then
             conflict = true
             break
           end
@@ -1211,7 +1211,7 @@ M.n_stage = function(self)
         return
       end
 
-      if selection.item and selection.item.mode == "UU" then
+      if selection.item and git.status.is_unmerged(selection.item.mode) then
         local diff_viewer = config.get_diff_viewer()
         if diff_viewer and git.merge.is_conflicted(selection.item.name) then
           local integration = diff_viewer == "codediff" and require("neogit.integrations.codediff")

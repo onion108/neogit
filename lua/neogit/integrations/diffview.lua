@@ -30,19 +30,16 @@ local function get_local_diff_view(section_name, item_name, opts)
 
     local sections = {}
 
-    -- all conflict modes (but I don't know how to generate UA/AU)
-    local conflict_modes = { "UU", "UD", "DU", "AA", "UA", "AU" }
-
     -- merge section gets both
     if section_name == "unstaged" or section_name == "merge" then
       sections.conflicting = {
         items = vim.tbl_filter(function(item)
-          return vim.tbl_contains(conflict_modes, item.mode) and item
+          return git.status.is_unmerged(item.mode) and item
         end, git.repo.state.unstaged.items),
       }
       sections.working = {
         items = vim.tbl_filter(function(item)
-          return not vim.tbl_contains(conflict_modes, item.mode) and item
+          return not git.status.is_unmerged(item.mode) and item
         end, git.repo.state.unstaged.items),
       }
     end
